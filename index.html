@@ -1,93 +1,145 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Realisasi RFID BLJ 2025</title>
+  <meta charset="UTF-8">
+  <title>Search ID Card</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
-    body { background:#f3f4f6; }
-
-    .header {
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.4)),
-                  url('https://i.imgur.com/epeHR3p.jpeg') center/cover no-repeat;
-      color:#fff; text-align:center; padding:80px 20px;
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f8;
+      text-align: center;
     }
-    .header h1 { font-size:2.5rem; margin-bottom:30px; }
 
-    .search-box { display:flex; justify-content:center; gap:0; }
-    .search-box input{
-      width:320px; padding:15px 20px; border:none; border-radius:50px 0 0 50px;
-      font-size:1rem; outline:none;
-    }
-    .search-box button{
-      padding:15px 25px; background:#00b894; color:#fff; border:none;
-      border-radius:0 50px 50px 0; font-size:1rem; cursor:pointer;
-    }
-    .search-box button:hover{ background:#019874; }
-
-    /* Area hasil */
-    #result {
-      max-width: 900px;
-      margin: 24px auto 60px;
-      padding: 0 20px;
+    h2 {
       color: #2c3e50;
-      font-size: 1rem;
-      line-height: 1.6;
-      white-space: pre-line;  /* agar \n dari Apps Script jadi baris baru */
-      text-align:center;
+      margin-bottom: 20px;
     }
 
-    /* PDF Section */
-    #pdfSection {
-      margin-top:25px;
-      display:none;
-    }
-    #pdfSection a {
-      display:inline-block;
-      font-size:3.5rem;
-      text-decoration:none;
-      color:#2c3e50;
-    }
-    #pdfSection p {
-      margin-top:10px;
-      font-size:0.95rem;
-      color:#555;
+    .search-box {
+      margin-bottom: 20px;
     }
 
-    /* Pesan loading */
-    .loading { color:#555; font-style:italic; }
+    input {
+      padding: 10px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 18px;
+      margin-left: 8px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 20px auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    .card p {
+      margin: 8px 0;
+      color: #555;
+    }
+
+    .not-found {
+      margin-top: 20px;
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    #pdfLink {
+      margin-top: 15px;
+      display: none;
+    }
+
+    #pdfLink a {
+      display: inline-block;
+      text-decoration: none;
+      color: #2c3e50;
+      font-size: 2.5rem;
+    }
+
+    #pdfLink p {
+      margin-top: 10px;
+      color: #555;
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>REALISASI RFID BLJ 2025</h1>
-    <div class="search-box">
-      <input type="text" id="idInput" placeholder="Masukkan ID kamu..." autofocus />
-      <button onclick="cekStatus()">Check</button>
-    </div>
+  <h2>Cari ID Card</h2>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Masukkan ID">
+    <button onclick="searchData()">Search</button>
   </div>
 
-  <div id="result"></div>
-  <div id="pdfSection">
-    <a href="Tutorial Pengajuan ID Card Baru (1).pdf" target="_blank">📄</a>
+  <div id="resultCard"></div>
+
+  <div id="notFound" class="not-found">ID Tidak ditemukan</div>
+
+  <div id="pdfLink">
     <p>Mohon diberikan keterangan, Keperluan Pembuatan RFID BLJ</p>
+    <a href="dokumen.pdf" target="_blank">📄</a>
   </div>
 
   <script>
-    async function cekStatus() {
-      const id = document.getElementById('idInput').value.trim();
-      const resultEl = document.getElementById('result');
-      const pdfEl = document.getElementById('pdfSection');
+    // contoh data dummy
+    const data = [
+      { id: "123", nama: "Budi", validasi: "Sep-2025" },
+      { id: "456", nama: "Susi", validasi: "Okt-2025" }
+    ];
 
-      if (!id) {
-        resultEl.textContent = "❌ Silakan masukkan ID terlebih dahulu.";
-        pdfEl.style.display = "none";
-        return;
+    function searchData() {
+      const input = document.getElementById("searchInput").value.trim();
+      const resultCard = document.getElementById("resultCard");
+      const notFound = document.getElementById("notFound");
+      const pdfLink = document.getElementById("pdfLink");
+
+      resultCard.innerHTML = "";
+      notFound.style.display = "none";
+      pdfLink.style.display = "none";
+
+      const result = data.find(item => item.id === input);
+
+      if (result) {
+        resultCard.innerHTML = `
+          <div class="card">
+            <h3>Data ID Card</h3>
+            <p><strong>ID:</strong> ${result.id}</p>
+            <p><strong>Nama:</strong> ${result.nama}</p>
+            <p><strong>Validasi:</strong> ${result.validasi}</p>
+          </div>
+        `;
+      } else {
+        notFound.style.display = "block";
+        pdfLink.style.display = "block";
       }
-
-      resultEl.innerHTML = "<span class='loading'>🔍 Sedang memproses...</span>";
-      pdfEl.style.display = "none";
-
-      try {
-        const res = await fetch(`https://script.google.com/macros/s/AKfycbyubXsiEkO8e4my9RkSr1WM22M6jq
+    }
+  </script>
+</body>
+</html>
