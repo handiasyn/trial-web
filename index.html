@@ -103,7 +103,7 @@
       resultEl.innerHTML = "<span class='loading'>🔍 Sedang memproses...</span>";
 
       try {
-        const res = await fetch(`https://script.google.com/macros/s/AKfycbyubXsiEkO8e4my9RkSr1WM22M6jqK5PimSkeXXJPM9KxBKpoJTvVFkuTSZsa9peJH1/exec?ID=${encodeURIComponent(id)}`);
+        const res = await fetch(`https://script.google.com/macros/s/AKfycbzpseibfb-mPMHmt8sxxAKxJ_ovHxovYrVyATO6SX18lPPXfuZSQ3YAzLC8HPLLqBTI/exec?ID=${encodeURIComponent(id)}`);
         const text = await res.text();
         // tampilkan teks dari Apps Script
         resultEl.textContent = text;
