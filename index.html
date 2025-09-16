@@ -26,7 +26,7 @@
     }
     .search-box button:hover{ background:#019874; }
 
-    /* Area hasil tanpa card/kotak */
+    /* Area hasil */
     #result {
       max-width: 900px;
       margin: 24px auto 60px;
@@ -35,6 +35,24 @@
       font-size: 1rem;
       line-height: 1.6;
       white-space: pre-line;  /* agar \n dari Apps Script jadi baris baru */
+      text-align:center;
+    }
+
+    /* PDF Section */
+    #pdfSection {
+      margin-top:25px;
+      display:none;
+    }
+    #pdfSection a {
+      display:inline-block;
+      font-size:3.5rem;
+      text-decoration:none;
+      color:#2c3e50;
+    }
+    #pdfSection p {
+      margin-top:10px;
+      font-size:0.95rem;
+      color:#555;
     }
 
     /* Pesan loading */
@@ -51,54 +69,25 @@
   </div>
 
   <div id="result"></div>
-
-  <!-- Bagian panduan ID Card -->
-  <div style="text-align:center; margin:60px 0;">
-    <h2 style="margin-bottom:20px; color:#2c3e50; font-weight:600;">
-      Cara Mengajukan ID Card Via Staff Portal (LGES)
-    </h2>
-
-    <!-- Panah -->
-    <div style="font-size:2.5rem; color:#00b894; margin-bottom:25px;">
-      ⬇️
-    </div>
-
-    <!-- Ikon file -->
-    <a href="Tutorial Pengajuan ID Card Baru (1).pdf" target="_blank" 
-       style="display:inline-block; font-size:3.5rem; text-decoration:none; color:#2c3e50;">
-      📄
-    </a>
-    <p style="margin-top:10px; font-size:0.95rem; color:#555;">
-      Klik ikon untuk membuka dokumen
-    </p>
+  <div id="pdfSection">
+    <a href="Tutorial Pengajuan ID Card Baru (1).pdf" target="_blank">📄</a>
+    <p>Mohon diberikan keterangan, Keperluan Pembuatan RFID BLJ</p>
   </div>
 
   <script>
     async function cekStatus() {
       const id = document.getElementById('idInput').value.trim();
       const resultEl = document.getElementById('result');
+      const pdfEl = document.getElementById('pdfSection');
 
       if (!id) {
         resultEl.textContent = "❌ Silakan masukkan ID terlebih dahulu.";
+        pdfEl.style.display = "none";
         return;
       }
 
       resultEl.innerHTML = "<span class='loading'>🔍 Sedang memproses...</span>";
+      pdfEl.style.display = "none";
 
       try {
-        const res = await fetch(`https://script.google.com/macros/s/AKfycbyubXsiEkO8e4my9RkSr1WM22M6jqK5PimSkeXXJPM9KxBKpoJTvVFkuTSZsa9peJH1/exec?ID=${encodeURIComponent(id)}`);
-        const text = await res.text();
-        // tampilkan teks dari Apps Script
-        resultEl.textContent = text;
-      } catch (e) {
-        resultEl.textContent = "⚠️ Terjadi kesalahan. Silakan coba lagi.";
-      }
-    }
-
-    // Enter untuk submit
-    document.getElementById('idInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') cekStatus();
-    });
-  </script>
-</body>
-</html>
+        const res = await fetch(`https://script.google.com/macros/s/AKfycbyubXsiEkO8e4my9RkSr1WM22M6jq
